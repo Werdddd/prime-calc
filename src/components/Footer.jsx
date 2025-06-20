@@ -3,8 +3,10 @@ import { FaLinkedin, FaGithub, FaReact } from 'react-icons/fa';
 import { SiTailwindcss } from 'react-icons/si';
 import './Footer.css';
 
+// Functional component for Footer
 const Footer = () => (
   <footer className="footer">
+    {/* Main container: full width, horizontal layout, spaced items */}
     <div className="w-full flex items-center justify-between px-4">
       {/* Left: Social Icons */}
       <div className="flex items-center gap-4">
@@ -16,12 +18,12 @@ const Footer = () => (
         </a>
       </div>
 
-      {/* Center: Name */}
+      {/* Center Section: Your name or brand */}
       <div className="text-center flex-1">
-        <span className="font-semibold text-sm">&copy; {new Date().getFullYear()} Andrew Emmanuel Robles</span>
+        <span className="font-semibold text-sm">&copy;  Andrew Emmanuel Robles</span>
       </div>
 
-      {/* Right: Made using */}
+      {/* Right Section: Tech stack used to build the site */}
       <div className="flex items-center gap-2">
         <span className="text-sm">Made using:</span>
         <FaReact size={20} className="text-cyan-500" title="React" />

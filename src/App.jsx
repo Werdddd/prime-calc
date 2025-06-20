@@ -8,11 +8,14 @@ import './App.css'
 function App() {
   // State variables for user input, results, and UI mode
   const [number, setNumber] = useState(''); // User input number
+  const [factorial, setFactorial] = useState(null); // Factorial result
   const [factors, setFactors] = useState([]); // All prime factors
   const [uniqueFactors, setUniqueFactors] = useState([]); // Unique prime factors
   const [factorTree, setFactorTree] = useState(null); // Factor tree structure
   const [mode, setMode] = useState('light'); // Light/dark mode
   const [message, setMessage] = useState(''); // Message for user feedback
+  
+
 
   // Effect to toggle dark mode class on the body
   useEffect(() => {
@@ -87,6 +90,25 @@ function App() {
     setFactorTree(buildFactorTree(n));
   };
 
+  // Calculate the factorial of a given number
+  const calculateFactorial = () => {
+    const n = parseInt(number);
+    if (isNaN(n) || n < 0) {
+      setFactorial(null);
+      setMessage('Please enter a non-negative integer.');
+      return;
+    }
+  
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+      result *= i;
+    }
+  
+    setMessage('');
+    setFactorial(result);
+  };
+  
+
   // Render the factor tree recursively with SVG connectors
   const renderTree = (node, isRoot = false) => {
     if (!node) return null;
@@ -152,26 +174,41 @@ function App() {
             onChange={(e) => setNumber(e.target.value)}
             className="w-full text-center"
           />
-          <div className="flex flex-row gap-4 w-full mt-3">
-            <button onClick={calculateFactors} className="w-full">Factorize</button>
+          <div className="flex flex-row gap-4 w-full mt-3 flex-wrap">
+            <button onClick={calculateFactors} className="w-full sm:w-auto flex-1">Factorize</button>
+            <button onClick={calculateFactorial} className="w-full sm:w-auto flex-1">Find Factorial</button>
             <button
               onClick={() => {
                 setNumber('');
                 setFactors([]);
                 setUniqueFactors([]);
                 setFactorTree(null);
+                setFactorial(null);
                 setMessage('');
               }}
-              className="w-full"
+              className="w-full sm:w-auto flex-1"
             >
               Reset
             </button>
           </div>
+
         </div>
 
         {/* Message for user feedback */}
         {message && (
           <div className="text-lg text-[--gold-dark] font-semibold text-center mt-4">{message}</div>
+        )}
+
+        {/* Display factorial results */}
+        {factorial !== null && (
+          <section className="w-full mt-8 text-center">
+            <div className="card mx-auto w-full max-w-xl p-6">
+              <h2 className="text-2xl font-semibold text-[--gold-dark] mb-2">Factorial:</h2>
+              <p className="text-xl select-text font-mono tracking-wide text-[--black] break-words">
+                {number}! = {factorial.toExponential(9).replace('e+', ' E+')}
+              </p>
+            </div>
+          </section>
         )}
 
         {/* Display results if factors are found */}
