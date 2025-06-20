@@ -6,13 +6,15 @@ import Footer from './components/Footer'
 import './App.css'
 
 function App() {
-   const [number, setNumber] = useState('');
-    const [factors, setFactors] = useState([]);
-    const [uniqueFactors, setUniqueFactors] = useState([]);
-    const [factorTree, setFactorTree] = useState(null);
-    const [mode, setMode] = useState('light');
-    const [message, setMessage] = useState('');
+  // State variables for user input, results, and UI mode
+  const [number, setNumber] = useState(''); // User input number
+  const [factors, setFactors] = useState([]); // All prime factors
+  const [uniqueFactors, setUniqueFactors] = useState([]); // Unique prime factors
+  const [factorTree, setFactorTree] = useState(null); // Factor tree structure
+  const [mode, setMode] = useState('light'); // Light/dark mode
+  const [message, setMessage] = useState(''); // Message for user feedback
 
+  // Effect to toggle dark mode class on the body
   useEffect(() => {
     if (mode === 'dark') {
       document.body.classList.add('dark');
@@ -21,8 +23,9 @@ function App() {
     }
   }, [mode]);
 
+  // Recursively build a factor tree for a given number
   function buildFactorTree(n) {
-    if (n < 2) return null;
+    if (n < 2) return null; // No tree for numbers < 2
     for (let i = 2; i <= Math.sqrt(n); i++) {
       if (n % i === 0) {
         return {
@@ -32,12 +35,15 @@ function App() {
         };
       }
     }
+    // Leaf node (prime number)
     return { value: n, left: null, right: null };
   }
 
+  // Calculate all and unique prime factors, build factor tree, and set messages
   const calculateFactors = () => {
     const n = parseInt(number);
     if (isNaN(n)) {
+      // Reset if input is not a number
       setFactors([]);
       setUniqueFactors([]);
       setFactorTree(null);
@@ -45,12 +51,14 @@ function App() {
       return;
     }
     if (n === 1) {
+      // Special case for 1
       setFactors([]);
       setUniqueFactors([]);
       setFactorTree(null);
       setMessage('1 is a weird number - it is not a prime, but is not divisible by other numbers, either.');
       return;
     }
+    // Check if the number is prime
     let isPrime = true;
     for (let i = 2; i <= Math.sqrt(n); i++) {
       if (n % i === 0) {
@@ -63,6 +71,7 @@ function App() {
     } else {
       setMessage('');
     }
+    // Find all and unique prime factors
     let num = n;
     const all = [];
     const unique = new Set();
@@ -78,11 +87,11 @@ function App() {
     setFactorTree(buildFactorTree(n));
   };
 
-  // Enhanced renderTree with SVG connectors
+  // Render the factor tree recursively with SVG connectors
   const renderTree = (node, isRoot = false) => {
     if (!node) return null;
 
-    // Leaf node
+    // Render leaf node (prime number)
     if (!node.left && !node.right) {
       return (
         <div className="factor-tree-node animate-pop">
@@ -91,7 +100,7 @@ function App() {
       );
     }
 
-    // Render children
+    // Render children nodes
     const children = [node.left, node.right].filter(Boolean);
 
     return (
@@ -117,10 +126,13 @@ function App() {
     );
   };
 
+  // Toggle between light and dark mode
   const toggleMode = () => setMode(mode === 'light' ? 'dark' : 'light');
 
   return (
+    // Main app container with dynamic mode class
     <div className={`flex flex-col min-h-screen font-[family-name:var(--font-geist-sans)]${mode === 'dark' ? ' dark' : ''}`}>
+      {/* Navigation bar with mode toggle */}
       <Navbar mode={mode} toggleMode={toggleMode} />
 
       <main className="flex-grow flex flex-col items-center justify-center px-6 sm:px-12 lg:px-20 py-16 sm:py-24 gap-10 max-w-5xl w-full mx-auto">
@@ -130,6 +142,7 @@ function App() {
           Enter a number to view its prime factors, unique prime factors, and the factor tree.
         </p>
 
+        {/* Input and action buttons */}
         <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
           <input
             type="number"
@@ -156,10 +169,12 @@ function App() {
           </div>
         </div>
 
+        {/* Message for user feedback */}
         {message && (
           <div className="text-lg text-[--gold-dark] font-semibold text-center mt-4">{message}</div>
         )}
 
+        {/* Display results if factors are found */}
         {factors.length > 0 && (
           <section className="w-full space-y-12 text-center mt-8">
             <div className="flex flex-col md:flex-row gap-6 w-full">
@@ -177,10 +192,8 @@ function App() {
                 </div>
               </div>
             </div>
-            
 
-           
-
+            {/* Factor tree visualization */}
             <div className="card mx-auto w-full p-8">
               <h2 className="text-2xl font-semibold text-[--gold-dark] mb-6">Factor Tree:</h2>
               <div className="flex justify-center overflow-x-auto">
@@ -191,6 +204,7 @@ function App() {
         )}
       </main>
 
+      {/* Footer component */}
       <Footer />
     </div>
   );
